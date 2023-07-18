@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=luxonis
+    ports:
+      - 5432:5432
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: server
+    environment:
+      DATABASE_URL: "postgres://postgres:postgres@db:5432/luxonis"
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    command: bash -c "node /app/dist/scrape.js && node /app/dist/index.js"
+    restart: on-failure
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: client
+    ports:
+      - 8080:8080

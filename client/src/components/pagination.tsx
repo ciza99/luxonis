@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { Fragment, ReactNode, useMemo } from "react";
 import clsx from "clsx";
 
 export const Pagination = ({
@@ -15,11 +15,15 @@ export const Pagination = ({
   const from = Math.max(1, page - range);
   const to = Math.min(totalPages, page + range);
 
-  const pages = new Set([
-    1,
-    ...Array.from({ length: to - from + 1 }, (_, i) => i + from),
-    totalPages,
-  ]);
+  const pages = useMemo(
+    () =>
+      new Set([
+        1,
+        ...Array.from({ length: to - from + 1 }, (_, i) => i + from),
+        totalPages,
+      ]),
+    [from, to, totalPages]
+  );
 
   const PageItem = useMemo(
     () => pageItemFacotry(page, onClick),
@@ -32,14 +36,10 @@ export const Pagination = ({
         if (pageNumber === 1 && page - range > 2) {
           const leftDotsPageNumber = Math.ceil((page - range + 1) / 2);
           return (
-            <>
-              <PageItem key={pageNumber} page={pageNumber}>
-                {pageNumber}
-              </PageItem>
-              <PageItem key={leftDotsPageNumber} page={leftDotsPageNumber}>
-                ...
-              </PageItem>
-            </>
+            <Fragment key={pageNumber}>
+              <PageItem page={pageNumber}>{pageNumber}</PageItem>
+              <PageItem page={leftDotsPageNumber}>...</PageItem>
+            </Fragment>
           );
         }
 
@@ -48,14 +48,10 @@ export const Pagination = ({
             (page + range + totalPages) / 2
           );
           return (
-            <>
-              <PageItem key={rightDotsPageNumber} page={rightDotsPageNumber}>
-                ...
-              </PageItem>
-              <PageItem key={pageNumber} page={pageNumber}>
-                {pageNumber}
-              </PageItem>
-            </>
+            <Fragment key={pageNumber}>
+              <PageItem page={rightDotsPageNumber}>...</PageItem>
+              <PageItem page={pageNumber}>{pageNumber}</PageItem>
+            </Fragment>
           );
         }
 
@@ -105,7 +101,6 @@ const PageItem = ({
           ["hover:bg-gray-200 cursor-pointer border-gray-300"]: !current,
         }
       )}
-      key={page}
       onClick={() => onClick?.(page)}
     >
       {children}

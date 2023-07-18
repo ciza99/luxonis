@@ -13,15 +13,19 @@ type Property = {
   images: Image[];
 };
 
-const fetchProperties = (page: number): Promise<Property[]> =>
+const fetchProperties = (
+  page: number
+): Promise<{ properties: Property[]; pageCount: number }> =>
   fetch(`${API_URL}/properties?page=${page}`).then((res) => res.json());
 
 export const Properties = () => {
   const [page, setPage] = useState(1);
-  const { data: properties } = useQuery({
+  const { data } = useQuery({
     queryKey: ["properties", page],
     queryFn: () => fetchProperties(page),
   });
+
+  if (!data) return <div>Loading...</div>;
 
   return (
     <main className="container mx-auto p-4">
@@ -29,13 +33,13 @@ export const Properties = () => {
         Properties for sale:
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {properties?.map((property) => (
+        {data?.properties?.map((property) => (
           <Property key={property.id} property={property} />
         ))}
       </div>
 
       <div className="mx-auto w-min mt-4">
-        <Pagination page={page} onClick={setPage} totalPages={10} />
+        <Pagination page={page} onClick={setPage} totalPages={data.pageCount} />
       </div>
     </main>
   );

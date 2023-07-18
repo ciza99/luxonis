@@ -1,8 +1,8 @@
-import { db } from "db";
+import { db } from "./db";
+import { Image, Property, images, properties } from "./models";
 import dotenv from "dotenv";
-import { asc, eq, inArray } from "drizzle-orm";
+import { asc, eq, inArray, sql } from "drizzle-orm";
 import express from "express";
-import { Image, Property, images, properties } from "models";
 import cors from "cors";
 
 const PROPERTY_LIMIT = 20;
@@ -19,10 +19,12 @@ app.get("/properties", async (req, res) => {
     return res.status(400).json({ error: "Invalid page" });
   }
 
-  console.log({ page });
+  const offset = (page - 1) * PROPERTY_LIMIT;
 
-  const offset = (page - 1) * 20;
-
+  const [countRow] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(properties);
+  const pageCount = Math.ceil(countRow.count / PROPERTY_LIMIT);
   const rows = await db
     .select({ property: properties, image: images })
     .from(properties)
@@ -57,9 +59,7 @@ app.get("/properties", async (req, res) => {
     (a, b) => a.order - b.order
   );
 
-  console.log({ result });
-
-  res.json(result);
+  res.json({ properties: result, pageCount });
 });
 
 const port = process.env.PORT ?? 8000;

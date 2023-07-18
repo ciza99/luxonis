@@ -3,12 +3,14 @@ import dotenv from "dotenv";
 import { asc, eq, inArray } from "drizzle-orm";
 import express from "express";
 import { Image, Property, images, properties } from "models";
+import cors from "cors";
 
 const PROPERTY_LIMIT = 20;
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 
 app.get("/properties", async (req, res) => {
   const page = Number(req.query.page ?? "1");

@@ -44,7 +44,7 @@ export const Properties = () => {
 const Property = ({ property }: { property: Property }) => {
   return (
     <div className="grow rounded-xl shadow-md overflow-hidden hover:scale-[1.0175] hover:shadow-xl transition-all">
-      <img className="w-full object-contain" src={property.images[0].url} />
+      <img className="w-full object-contain" src={property.images[0]?.url} />
       <div className="p-2">
         <h2 className="text-blue-500 font-bold">{property.title}</h2>
         <p>Price: {property.price}</p>

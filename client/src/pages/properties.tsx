@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { API_URL } from "../constants";
+import { Pagination } from "../components/pagination";
 
 type Image = {
   url: string;
@@ -27,10 +28,14 @@ export const Properties = () => {
       <h1 className="font-bold text-blue-400 text-3xl mb-4">
         Properties for sale:
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {properties?.map((property) => (
           <Property key={property.id} property={property} />
         ))}
+      </div>
+
+      <div className="mx-auto w-min mt-4">
+        <Pagination page={page} onClick={setPage} totalPages={10} />
       </div>
     </main>
   );

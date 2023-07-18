@@ -4,6 +4,8 @@ import { asc, eq, inArray } from "drizzle-orm";
 import express from "express";
 import { Image, Property, images, properties } from "models";
 
+const PROPERTY_LIMIT = 20;
+
 dotenv.config();
 
 const app = express();
@@ -31,7 +33,7 @@ app.get("/properties", async (req, res) => {
           .from(properties)
           .orderBy(asc(properties.id))
           .offset(offset)
-          .limit(20)
+          .limit(PROPERTY_LIMIT)
       )
     );
 

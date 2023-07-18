@@ -1,3 +1,12 @@
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Properties } from "./pages/properties";
+
+const queryClient = new QueryClient();
+
 export const App = () => {
-  return <p className="text-xl font-bold text-red-600">hellow world</p>;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Properties />
+    </QueryClientProvider>
+  );
 };

@@ -1,5 +1,4 @@
 import { ReactNode, useMemo } from "react";
-import { Button } from "./button";
 import clsx from "clsx";
 
 export const Pagination = ({
